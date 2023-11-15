@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
-import generateToken from "../helpers/tokenGenerator.js";
-import asyncHandler from "../helpers/asyncHandler.js";
+import generateToken from "../utils/tokenGenerator.js";
+import asyncHandler from "../middleware/asyncHandler.js";
 
 // Login user
 const loginUser = asyncHandler(async (req, res) => {
@@ -10,7 +10,7 @@ const loginUser = asyncHandler(async (req, res) => {
     // Check if the user exists in the database
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
     // Compare the provided password with the stored password
@@ -19,18 +19,15 @@ const loginUser = asyncHandler(async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const token = generateToken(user._id);
-
-    // Set the token as a cookie
-    res.cookie("token", token, {
-      maxAge: 60 * 60 * 24 * 30, // Expiration time 30 days
-      httpOnly: true, // Cookie is accessible only by the server
-      secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict",
-    });
+    user && generateToken(res, user._id);
 
     // Return the user data
-    res.status(200).json({ user });
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to login" });
   }
@@ -57,20 +54,29 @@ const registerUser = asyncHandler(async (req, res) => {
     // Save the new user to the database
     await newUser.save();
 
-    const token = generateToken(newUser._id);
-
-    // Set the token as a cookie
-    res.cookie("token", token, {
-      maxAge: 60 * 60 * 24 * 30, // Expiration time 30 days
-      httpOnly: true, // Cookie is accessible only by the server
-      secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict",
-    });
+    newUser && generateToken(res, newUser._id);
 
     // Return the newly created user data
-    res.status(201).json({ user: newUser });
+    res.status(201).json({
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      isAdmin: newUser.isAdmin,
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to register user" });
+  }
+});
+
+// Logout user
+const logoutUser = asyncHandler(async (req, res) => {
+  try {
+    // Clear the token cookie
+    res.clearCookie("token");
+
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to logout" });
   }
 });
 
@@ -161,6 +167,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 export {
   loginUser,
   registerUser,
+  logoutUser,
   getUsers,
   getUserById,
   createUser,
