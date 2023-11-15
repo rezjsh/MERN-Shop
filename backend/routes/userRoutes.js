@@ -6,15 +6,22 @@ import {
   updateUser,
   loginUser,
   registerUser,
+  logoutUser,
 } from "../controllers/userController.js";
+import { auth, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // User routes
 router.route("/login").post(loginUser);
-router.route("/").get(getUsers).post(registerUser);
+router.route("/logout").post(logoutUser);
+router.route("/").get(auth, admin, getUsers).post(registerUser);
 
-router.route("/:id").get(getUserById).put(updateUser).delete(deleteUser);
+router
+  .route("/:id")
+  .get(auth, admin, getUserById)
+  .put(auth, admin, updateUser)
+  .delete(auth, admin, deleteUser);
 
 // Auth routes
 
