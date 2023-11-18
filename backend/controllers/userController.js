@@ -16,17 +16,19 @@ const loginUser = asyncHandler(async (req, res) => {
     // Compare the provided password with the stored password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
     user && generateToken(res, user._id);
 
     // Return the user data
     res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to login" });
@@ -57,12 +59,13 @@ const registerUser = asyncHandler(async (req, res) => {
     newUser && generateToken(res, newUser._id);
 
     // Return the newly created user data
-    res.status(201).json({
+    const user = {
       _id: newUser._id,
       name: newUser.name,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
-    });
+    };
+    res.status(201).json({ user });
   } catch (error) {
     res.status(500).json({ error: "Failed to register user" });
   }
