@@ -1,0 +1,19 @@
+/* https://colorhunt.co/palette/f3eeeaebe3d5b0a695776b5d
+https://colorhunt.co/palette/00a9ff89cff3a0e9ffcdf5fd
+https://colorhunt.co/palette/f875aaffdfdffff6f6aedefc
+ */
+body {
+  background-color: #FFF6F6;
+  color: #776B5D;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
