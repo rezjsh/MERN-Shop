@@ -9,11 +9,13 @@ import {
   logoutUser,
 } from "../controllers/userController.js";
 import { auth, admin } from "../middleware/authMiddleware.js";
+import validationMiddleware from "../middleware/validationMiddleware.js";
+import { loginValidator } from "../validations/userValidator.js";
 
 const router = express.Router();
 
 // User routes
-router.route("/login").post(loginUser);
+router.route("/login").post(loginValidator, validationMiddleware, loginUser);
 router.route("/logout").post(logoutUser);
 router.route("/").get(auth, admin, getUsers).post(registerUser);
 
