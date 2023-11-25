@@ -9,18 +9,25 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { Provider } from "react-redux";
-import store from "./redux/store";
-import Login from "./pages/auth/Login";
-import Layout from "./components/auth/Layout";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import Layout from "./components/auth/Layout";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import PrivateRoute from "./components/auth/PrivateRoute";
+import Index from "./pages/admin/category/Index";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route element={<Layout />}>
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+      </Route>
+      <Route element={<PrivateRoute />}>
+        <Route path="admin/categories" element={<Index />} />
       </Route>
     </Route>
   )
