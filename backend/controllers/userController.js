@@ -23,12 +23,10 @@ const loginUser = asyncHandler(async (req, res) => {
 
     // Return the user data
     res.status(200).json({
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-      },
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to login" });
@@ -58,14 +56,12 @@ const registerUser = asyncHandler(async (req, res) => {
 
     newUser && generateToken(res, newUser._id);
 
-    // Return the newly created user data
-    const user = {
+    res.status(201).json({
       _id: newUser._id,
       name: newUser.name,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
-    };
-    res.status(201).json({ user });
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to register user" });
   }
